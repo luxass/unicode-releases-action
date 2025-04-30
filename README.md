@@ -1,7 +1,5 @@
 # unicode-releases-action
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/luxass/unicode-releases-action/ci.yml?style=flat-square&logo=github)](https://github.com/luxass/unicode-releases-action/actions)
-
 GitHub Action for fetching the latest Unicode release information, including the current releases list and draft releases.
 
 ## Usage
