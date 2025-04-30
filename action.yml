@@ -1,5 +1,9 @@
 name: Unicode Release Version Checker
 description: GitHub Action that fetches Unicode releases information
+author: Lucas Nørgård
+branding:
+  color: green
+  icon: archive
 
 outputs:
   all_releases:
