@@ -1,0 +1,20 @@
+name: Unicode Release Version Checker
+description: GitHub Action that fetches Unicode releases information
+
+outputs:
+  all_releases:
+    description: 'JSON array of all Unicode release names'
+    value: ${{ steps.unicode-releases.outputs.all_releases }}
+  latest_release:
+    description: 'The latest Unicode release information'
+    value: ${{ steps.unicode-releases.outputs.latest_release }}
+  current_draft:
+    description: 'The current draft Unicode release information'
+    value: ${{ steps.unicode-releases.outputs.current_draft }}
+
+runs:
+  using: composite
+  steps:
+    - id: unicode-releases
+      run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/run.sh"
+      shell: bash
