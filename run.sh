@@ -80,15 +80,15 @@ UPDATE_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c --arg map "${VERSION_MAP}" '
 ')
 
 # Merge both lists into final releases
-MERGED_RELEASES=$(echo "${UPDATE_VERSIONS} ${REGULAR_VERSIONS}" | jq -s 'add')
+MERGED_UCD_RELEASES=$(echo "${UPDATE_VERSIONS} ${REGULAR_VERSIONS}" | jq -s 'add')
 
 # remove the draft release from the releases list
-RELEASES=$(echo "${MERGED_RELEASES}" | jq -c --arg draft "${DRAFT_VERSION}" '[.[] | select(.version != $draft)]')
+UCD_RELEASES=$(echo "${MERGED_UCD_RELEASES}" | jq -c --arg draft "${DRAFT_VERSION}" '[.[] | select(.version != $draft)]')
 
 info "📝 Latest release: ${LATEST_RELEASE}"
 info "📝 Latest draft: ${DRAFT_VERSION}"
 info "📦 All releases: ${UNICODE_VERSIONS}"
-info "📦 Releases with UCD: ${RELEASES}"
+info "📦 Releases with UCD: ${UCD_RELEASES}"
 
 {
   printf 'current_draft=%s\n' "${DRAFT_VERSION}"
