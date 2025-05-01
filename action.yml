@@ -15,6 +15,9 @@ outputs:
   current_draft:
     description: 'The current draft Unicode release information'
     value: ${{ steps.unicode-releases.outputs.current_draft }}
+  ucd_releases:
+    description: 'JSON array of UCD release names'
+    value: ${{ steps.unicode-releases.outputs.ucd_releases }}
 
 runs:
   using: composite

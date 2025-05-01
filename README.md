@@ -12,11 +12,12 @@ This action fetches Unicode release information including:
 
 ### Outputs
 
-| Name           | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| all_releases   | JSON array containing all Unicode release versions   |
-| latest_release | Latest stable Unicode release version                |
-| current_draft  | Current draft Unicode release version (if available) |
+| Name           | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| all_releases   | JSON array containing all Unicode release versions            |
+| latest_release | Latest stable Unicode release version                         |
+| current_draft  | Current draft Unicode release version (if available)          |
+| ucd_releases   | JSON array containing all Unicode Character Database releases |
 
 ### Example workflow
 
@@ -41,6 +42,7 @@ jobs:
           echo "Latest Release: ${{ steps.unicode.outputs.latest_release }}"
           echo "All Releases: ${{ steps.unicode.outputs.all_releases }}"
           echo "Current Draft: ${{ steps.unicode.outputs.current_draft }}"
+          echo "UCD Releases: ${{ steps.unicode.outputs.ucd_releases }}"
 ```
 
 ## License
