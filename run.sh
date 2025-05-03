@@ -65,7 +65,7 @@ EOF
 # get regular versions
 REGULAR_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c '[.[] |
   select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) |
-  {version: .name, ucdPath: .name}]')
+  {version: .name, mappedVersion: .name}]')
 
 # Get update versions as new objects with mapped name but original ucd
 UPDATE_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c --arg map "${VERSION_MAP}" '
@@ -74,7 +74,7 @@ UPDATE_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c --arg map "${VERSION_MAP}" '
    .name as $original |
    {
      version: (($map | fromjson)[$original] // $original),
-     ucdPath: $original
+     mappedVersion: $original
    }
   ]
 ')
