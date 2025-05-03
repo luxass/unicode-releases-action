@@ -24,7 +24,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: taiki-e/create-gh-release-action@v1
+      - uses: taiki-e/create-gh-release-action@26b80501670402f1999aff4b934e1574ef2d3705 # v1.9.1
         with:
           title: $version
           branch: 'main|v[0-9]+'
