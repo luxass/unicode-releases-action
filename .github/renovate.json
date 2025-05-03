@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>luxass/renovate-config"
+    "github>luxass/renovate-config"
   ]
 }
