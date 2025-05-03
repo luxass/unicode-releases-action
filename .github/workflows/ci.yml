@@ -27,7 +27,7 @@ jobs:
           - os: ubuntu-latest
           - os: macos-latest
           - os: windows-latest
-    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -38,13 +38,23 @@ jobs:
         id: unicode-releases
         uses: ./
 
-      - name: check action outputs
+      - name: display action outputs
+        env:
+          ALL_RELEASES: ${{ steps.unicode-releases.outputs.all_releases }}
+          LATEST_RELEASE: ${{ steps.unicode-releases.outputs.latest_release }}
+          CURRENT_DRAFT: ${{ steps.unicode-releases.outputs.current_draft }}
+          UCD_RELEASES: ${{ steps.unicode-releases.outputs.ucd_releases }}
         run: |
-          echo -e "\nAll Unicode Releases:"
-          printf '%s\n' "${{ steps.unicode-releases.outputs.all_releases }}"
-          echo -e "\n\nLatest Unicode Release:"
-          printf '%s\n' "${{ steps.unicode-releases.outputs.latest_release }}"
-          echo -e "\n\nCurrent Unicode Draft:"
-          printf '%s\n' "${{ steps.unicode-releases.outputs.current_draft }}"
-          echo -e "\n\nUCD Releases:"
-          printf '%s\n' "${{ steps.unicode-releases.outputs.ucd_releases }}"
+          echo "### Unicode Releases Information ###"
+          echo
+          echo "## All Unicode Releases:"
+          echo "$ALL_RELEASES" | jq '.' 2>/dev/null || echo "$ALL_RELEASES"
+          echo
+          echo "## Latest Unicode Release:"
+          echo "$LATEST_RELEASE" | jq '.' 2>/dev/null || echo "$LATEST_RELEASE"
+          echo
+          echo "## Current Unicode Draft:"
+          echo "$CURRENT_DRAFT" | jq '.' 2>/dev/null || echo "$CURRENT_DRAFT"
+          echo
+          echo "## UCD Releases:"
+          echo "$UCD_RELEASES" | jq '.' 2>/dev/null || echo "$UCD_RELEASES"
