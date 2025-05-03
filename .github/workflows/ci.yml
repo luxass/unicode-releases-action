@@ -1,0 +1,50 @@
+name: CI
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -CeEuxo pipefail {0}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: fetch unicode releases
+        id: unicode-releases
+        uses: ./
+
+      - name: check action outputs
+        run: |
+          echo -e "\nAll Unicode Releases:"
+          printf '%s\n' "${{ steps.unicode-releases.outputs.all_releases }}"
+          echo -e "\n\nLatest Unicode Release:"
+          printf '%s\n' "${{ steps.unicode-releases.outputs.latest_release }}"
+          echo -e "\n\nCurrent Unicode Draft:"
+          printf '%s\n' "${{ steps.unicode-releases.outputs.current_draft }}"
+          echo -e "\n\nUCD Releases:"
+          printf '%s\n' "${{ steps.unicode-releases.outputs.ucd_releases }}"
