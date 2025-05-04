@@ -22,7 +22,7 @@ extract_from_readme() {
 }
 
 # fetch the unicode data
-if ! UNICODE_DATA=$(curl -s "${BASE_URL}/proxy"); then
+if ! UNICODE_DATA=$(curl -s "${BASE_URL}"); then
     bail "failed to fetch unicode data"
 fi
 
@@ -31,12 +31,12 @@ if ! UNICODE_VERSIONS=$(curl -s "${BASE_URL}/versions"); then
 fi
 
 # fetch the draft README
-if ! DRAFT_DATA=$(curl -s "${BASE_URL}/proxy/draft/ReadMe.txt"); then
+if ! DRAFT_DATA=$(curl -s "${BASE_URL}/draft/ReadMe.txt"); then
     bail "failed to fetch draft data"
 fi
 
 # fetch the latest release README
-if ! LATEST_DATA=$(curl -s "${BASE_URL}/proxy/UCD/latest/ReadMe.txt"); then
+if ! LATEST_DATA=$(curl -s "${BASE_URL}/UCD/latest/ReadMe.txt"); then
     bail "failed to fetch latest release data"
 fi
 
