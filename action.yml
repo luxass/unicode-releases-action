@@ -5,6 +5,12 @@ branding:
   color: green
   icon: archive
 
+inputs:
+  api_base_url:
+    description: "The base URL for UCD.js' API, e.g. 'https://api.ucdjs.dev' or 'https://preview.api.ucdjs.dev'"
+    default: "https://api.ucdjs.dev"
+    required: true
+
 outputs:
   all_releases:
     description: 'JSON array of all Unicode release names'
@@ -19,9 +25,14 @@ outputs:
     description: 'JSON array of UCD release names'
     value: ${{ steps.unicode-releases.outputs.ucd_releases }}
 
+# Note:
+# - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
+# - Use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
 runs:
   using: composite
   steps:
     - id: unicode-releases
+      env:
+        INPUT_API_BASE_URL: ${{ inputs.api_base_url }}
       run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/run.sh"
       shell: bash

@@ -10,11 +10,12 @@ source "${SCRIPT_DIR}/utils.sh"
 # check for jq
 check_jq
 
+API_BASE_URL="${INPUT_API_BASE_URL:-"https://api.ucdjs.dev"}/api"
+
 BASE_URL="https://unicode-proxy.ucdjs.dev"
 
 info "🔍 checking for new releases"
 info "🔗 base url: ${BASE_URL}"
-
 
 extract_from_readme() {
     local data="$1"
@@ -26,7 +27,7 @@ if ! UNICODE_DATA=$(curl -s "${BASE_URL}"); then
     bail "failed to fetch unicode data"
 fi
 
-if ! UNICODE_VERSIONS=$(curl -s "${BASE_URL}/versions"); then
+if ! UNICODE_VERSIONS=$(curl -s "${API_BASE_URL}/v1/unicode-versions"); then
     bail "failed to fetch all versions"
 fi
 
