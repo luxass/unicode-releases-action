@@ -11,11 +11,11 @@ source "${SCRIPT_DIR}/utils.sh"
 check_jq
 
 API_BASE_URL="${INPUT_API_BASE_URL:-"https://api.ucdjs.dev"}/api"
-
-BASE_URL="https://unicode-proxy.ucdjs.dev"
+PROXY_BASE_URL="${INPUT_PROXY_BASE_URL:-"https://unicode-proxy.ucdjs.dev"}"
 
 info "🔍 checking for new releases"
-info "🔗 base url: ${BASE_URL}"
+info "🔗 proxy base url: ${PROXY_BASE_URL}"
+info "🔗 api base url: ${API_BASE_URL}"
 
 extract_from_readme() {
     local data="$1"
@@ -23,7 +23,7 @@ extract_from_readme() {
 }
 
 # fetch the unicode data
-if ! UNICODE_DATA=$(curl -s "${BASE_URL}"); then
+if ! UNICODE_DATA=$(curl -s "${PROXY_BASE_URL}"); then
     bail "failed to fetch unicode data"
 fi
 
@@ -32,12 +32,12 @@ if ! UNICODE_VERSIONS=$(curl -s "${API_BASE_URL}/v1/unicode-versions"); then
 fi
 
 # fetch the draft README
-if ! DRAFT_DATA=$(curl -s "${BASE_URL}/draft/ReadMe.txt"); then
+if ! DRAFT_DATA=$(curl -s "${PROXY_BASE_URL}/draft/ReadMe.txt"); then
     bail "failed to fetch draft data"
 fi
 
 # fetch the latest release README
-if ! LATEST_DATA=$(curl -s "${BASE_URL}/UCD/latest/ReadMe.txt"); then
+if ! LATEST_DATA=$(curl -s "${PROXY_BASE_URL}/UCD/latest/ReadMe.txt"); then
     bail "failed to fetch latest release data"
 fi
 

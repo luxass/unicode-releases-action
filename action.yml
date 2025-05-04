@@ -9,6 +9,9 @@ inputs:
   api_base_url:
     description: "The base URL for UCD.js' API, e.g. 'https://api.ucdjs.dev' or 'https://preview.api.ucdjs.dev'"
     default: "https://api.ucdjs.dev"
+  proxy_base_url:
+    description: "The base URL for the proxy server, e.g. 'https://unicode-proxy.ucdjs.dev' or 'https://preview.unicode-proxy.ucdjs.dev'"
+    default: "https://unicode-proxy.ucdjs.dev"
 
 outputs:
   all_releases:
@@ -33,5 +36,6 @@ runs:
     - id: unicode-releases
       env:
         INPUT_API_BASE_URL: ${{ inputs.api_base_url }}
+        INPUT_PROXY_BASE_URL: ${{ inputs.proxy_base_url }}
       run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/run.sh"
       shell: bash
