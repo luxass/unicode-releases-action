@@ -9,7 +9,6 @@ inputs:
   api_base_url:
     description: "The base URL for UCD.js' API, e.g. 'https://api.ucdjs.dev' or 'https://preview.api.ucdjs.dev'"
     default: "https://api.ucdjs.dev"
-    required: true
 
 outputs:
   all_releases:
