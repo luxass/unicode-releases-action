@@ -41,27 +41,13 @@ if ! LATEST_DATA=$(curl -s "${PROXY_BASE_URL}/UCD/latest/ReadMe.txt"); then
     bail "failed to fetch latest release data"
 fi
 
+# fetch version mappings
+if ! VERSION_MAP=$(curl -s "${API_BASE_URL}/v1/unicode-versions/mappings"); then
+    bail "failed to fetch version mappings"
+fi
+
 DRAFT_VERSION=$(extract_from_readme "${DRAFT_DATA}")
 LATEST_RELEASE=$(extract_from_readme "${LATEST_DATA}")
-
-VERSION_MAP=$(cat <<'EOF' | jq -c
-{
-  "1.1-Update": "1.1.0",
-  "2.0-Update": "2.0.0",
-  "2.1-Update": "2.1.1",
-  "2.1-Update2": "2.1.5",
-  "2.1-Update3": "2.1.8",
-  "2.1-Update4": "2.1.9",
-  "3.0-Update": "3.0.0",
-  "3.0-Update1": "3.0.1",
-  "3.1-Update": "3.1.0",
-  "3.1-Update1": "3.1.1",
-  "3.2-Update": "3.2.0",
-  "4.0-Update": "4.0.0",
-  "4.0-Update1": "4.0.1"
-}
-EOF
-)
 
 # get regular versions
 REGULAR_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c '[.[] |
@@ -74,7 +60,7 @@ UPDATE_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c --arg map "${VERSION_MAP}" '
    select(.name | test("^[0-9]+\\.[0-9]+-Update[0-9]*$")) |
    .name as $original |
    {
-     version: (($map | fromjson)[$original] // $original),
+     version: (($map | fromjson) | to_entries | map(select(.value == $original)) | .[0].key),
      mappedVersion: $original
    }
   ]
