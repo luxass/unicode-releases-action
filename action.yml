@@ -7,7 +7,7 @@ branding:
 
 inputs:
   api_base_url:
-    description: "The base URL for API, e.g. 'https://unicode-tools.luxass.dev' or 'https://preview.unicode-tools.luxass.dev'"
+    description: "The base URL for API, e.g. 'https://unicode-api.luxass.dev' or 'https://preview.unicode-api.luxass.dev'"
     default: "https://unicode-tools.luxass.dev"
   proxy_base_url:
     description: "The base URL for the proxy server, e.g. 'https://unicode-proxy.ucdjs.dev' or 'https://preview.unicode-proxy.ucdjs.dev'"

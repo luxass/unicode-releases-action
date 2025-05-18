@@ -10,7 +10,7 @@ source "${SCRIPT_DIR}/utils.sh"
 # check for jq
 check_jq
 
-API_BASE_URL="${INPUT_API_BASE_URL:-"https://unicode-tools.luxass.dev"}/api"
+API_BASE_URL="${INPUT_API_BASE_URL:-"https://unicode-api.luxass.dev"}/api"
 PROXY_BASE_URL="${INPUT_PROXY_BASE_URL:-"https://unicode-proxy.ucdjs.dev"}"
 
 info "🔍 checking for new releases"
