@@ -10,7 +10,7 @@ release VERSION:
     fi
 
     # Update README.md with new version
-    sed -i.bak "s|luxass/unicode-releases-action@v[0-9]\+\.[0-9]\+\.[0-9]\+|luxass/unicode-releases-action@{{VERSION}}|g" README.md
+    sed -i.bak -E "s|luxass/unicode-releases-action@v[0-9]+\.[0-9]+\.[0-9]+|luxass/unicode-releases-action@{{VERSION}}|g" README.md
     rm README.md.bak
 
     # Commit the version update
