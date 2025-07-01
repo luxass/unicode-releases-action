@@ -10,7 +10,15 @@ source "${SCRIPT_DIR}/utils.sh"
 # check for jq
 check_jq
 
-API_BASE_URL="${INPUT_API_BASE_URL:-"https://api.ucdjs.dev"}/api"
+if [[ -z "${INPUT_API_BASE_URL:-}" ]]; then
+  API_BASE_URL="https://api.ucdjs.dev/api"
+else
+  case "${INPUT_API_BASE_URL}" in
+    */api) API_BASE_URL="${INPUT_API_BASE_URL}" ;;
+    *)     API_BASE_URL="${INPUT_API_BASE_URL}/api" ;;
+  esac
+fi
+
 PROXY_BASE_URL="${INPUT_PROXY_BASE_URL:-"https://unicode-proxy.ucdjs.dev"}"
 
 info "🔍 checking for new releases"
