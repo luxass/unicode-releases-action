@@ -30,66 +30,39 @@ extract_from_readme() {
     echo "${data}" | grep -o "Version [0-9]\+\.[0-9]\+\.[0-9]\+" | head -n1 | cut -d' ' -f2
 }
 
-# fetch the unicode data
-if ! UNICODE_DATA=$(curl -s "${PROXY_BASE_URL}"); then
-    bail "failed to fetch unicode data"
-fi
 
-if ! UNICODE_VERSIONS=$(curl -s "${API_BASE_URL}/v1/unicode-versions"); then
-    bail "failed to fetch all versions"
-fi
+# fetch all required data with retry logic
+UNICODE_DATA=$(fetch_with_retry "${PROXY_BASE_URL}" "unicode data")
+validate_json "${UNICODE_DATA}" "unicode data"
 
-# fetch the draft README
-if ! DRAFT_DATA=$(curl -s "${PROXY_BASE_URL}/draft/ReadMe.txt"); then
-    bail "failed to fetch draft data"
-fi
+UNICODE_VERSIONS=$(fetch_with_retry "${API_BASE_URL}/v1/unicode-versions" "all versions")
+validate_json "${UNICODE_VERSIONS}" "all versions"
 
-# fetch the latest release README
-if ! LATEST_DATA=$(curl -s "${PROXY_BASE_URL}/UCD/latest/ReadMe.txt"); then
-    bail "failed to fetch latest release data"
-fi
+DRAFT_DATA=$(fetch_with_retry "${PROXY_BASE_URL}/draft/ReadMe.txt" "draft README")
 
-# fetch version mappings
-if ! VERSION_MAP=$(curl -s "${API_BASE_URL}/v1/unicode-versions/mappings"); then
-    bail "failed to fetch version mappings"
-fi
+LATEST_DATA=$(fetch_with_retry "${PROXY_BASE_URL}/UCD/latest/ReadMe.txt" "latest release README")
+
+VERSION_MAP=$(fetch_with_retry "${API_BASE_URL}/v1/unicode-versions/mappings" "version mappings")
+validate_json "${VERSION_MAP}" "version mappings"
+
 
 DRAFT_VERSION=$(extract_from_readme "${DRAFT_DATA}")
 LATEST_RELEASE=$(extract_from_readme "${LATEST_DATA}")
 
-# get regular versions
-REGULAR_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c '[.[] |
-  select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) |
-  {version: .name, mappedVersion: .name}]')
+# validate extracted versions
+if [[ -z "${DRAFT_VERSION}" ]]; then
+    warn "could not extract draft version from README"
+fi
 
-# Get update versions as new objects with mapped name but original ucd
-UPDATE_VERSIONS=$(echo "${UNICODE_DATA}" | jq -c --arg map "${VERSION_MAP}" '
-  [.[] |
-   select(.name | test("^[0-9]+\\.[0-9]+-Update[0-9]*$")) |
-   .name as $original |
-   {
-     version: (($map | fromjson) | to_entries | map(select(.value == $original)) | .[0].key),
-     mappedVersion: $original
-   }
-  ]
-')
+if [[ -z "${LATEST_RELEASE}" ]]; then
+    warn "could not extract latest release version from README"
+fi
 
-# Merge both lists into final releases
-MERGED_UCD_RELEASES=$(echo "${UPDATE_VERSIONS} ${REGULAR_VERSIONS}" | jq -s 'add')
+# process unicode releases with improved logic
+UCD_RELEASES=$(process_unicode_data "${UNICODE_DATA}" "${VERSION_MAP}" "${DRAFT_VERSION}")
+validate_json "${UCD_RELEASES}" "processed UCD releases"
 
-# remove the draft release from the releases list
-UCD_RELEASES=$(echo "${MERGED_UCD_RELEASES}" | jq -c --arg draft "${DRAFT_VERSION}" '[.[] | select(.version != $draft)]')
 
-info "📝 Latest release: ${LATEST_RELEASE}"
-info "📝 Latest draft: ${DRAFT_VERSION}"
-info "📦 All releases: ${UNICODE_VERSIONS}"
-info "📦 Releases with UCD: ${UCD_RELEASES}"
-
-{
-  printf 'current_draft=%s\n' "${DRAFT_VERSION}"
-  printf 'latest_release=%s\n' "${LATEST_RELEASE}"
-  printf 'all_releases=%s\n' "${UNICODE_VERSIONS}"
-  printf 'ucd_releases=%s\n' "${UCD_RELEASES}"
-} >>"${GITHUB_OUTPUT}"
+generate_outputs "${DRAFT_VERSION}" "${LATEST_RELEASE}" "${UNICODE_VERSIONS}" "${UCD_RELEASES}"
 
 
