@@ -1,9 +1,10 @@
-name: Unicode Release Version Checker
-description: GitHub Action that fetches Unicode releases information
+name: Unicode Releases
+description: GitHub Action for gathering information about Unicode releases, including the latest release, current draft, and UCD (Unicode Character Database) releases.
+
 author: Lucas Nørgård
 branding:
-  color: green
-  icon: archive
+  color: blue
+  icon: globe
 
 inputs:
   api_base_url:
