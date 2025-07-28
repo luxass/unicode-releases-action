@@ -42,7 +42,6 @@ jobs:
           echo "Latest Release: ${{ steps.unicode.outputs.latest_release }}"
           echo "All Releases: ${{ steps.unicode.outputs.all_releases }}"
           echo "Current Draft: ${{ steps.unicode.outputs.current_draft }}"
-          echo "UCD Releases: ${{ steps.unicode.outputs.ucd_releases }}"
 ```
 
 ## License
