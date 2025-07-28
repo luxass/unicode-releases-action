@@ -1,5 +1,5 @@
 name: Unicode Releases
-description: GitHub Action for gathering information about Unicode releases, including the latest release, current draft, and UCD (Unicode Character Database) releases.
+description: "GitHub Action to gather Unicode information: latest release, current draft, and Unicode releases."
 
 author: Lucas Nørgård
 branding:
