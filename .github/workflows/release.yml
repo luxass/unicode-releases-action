@@ -24,8 +24,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: taiki-e/create-gh-release-action@26b80501670402f1999aff4b934e1574ef2d3705 # v1.9.1
+      - name: setup node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          title: $version
-          branch: 'main|v[0-9]+'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: lts/*
+
+      - run: npx changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
