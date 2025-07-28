@@ -43,7 +43,6 @@ jobs:
           ALL_RELEASES: ${{ steps.unicode-releases.outputs.all_releases }}
           LATEST_RELEASE: ${{ steps.unicode-releases.outputs.latest_release }}
           CURRENT_DRAFT: ${{ steps.unicode-releases.outputs.current_draft }}
-          UCD_RELEASES: ${{ steps.unicode-releases.outputs.ucd_releases }}
         run: |
           echo "### Unicode Releases Information ###"
           echo
@@ -55,6 +54,3 @@ jobs:
           echo
           echo "## Current Unicode Draft:"
           echo "$CURRENT_DRAFT" | jq '.' 2>/dev/null || echo "$CURRENT_DRAFT"
-          echo
-          echo "## UCD Releases:"
-          echo "$UCD_RELEASES" | jq '.' 2>/dev/null || echo "$UCD_RELEASES"

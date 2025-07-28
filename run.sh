@@ -19,10 +19,7 @@ else
   esac
 fi
 
-PROXY_BASE_URL="${INPUT_PROXY_BASE_URL:-"https://unicode-proxy.ucdjs.dev"}"
-
 info "🔍 checking for new releases"
-info "🔗 proxy base url: ${PROXY_BASE_URL}"
 info "🔗 api base url: ${API_BASE_URL}"
 
 extract_from_readme() {
@@ -31,23 +28,15 @@ extract_from_readme() {
 }
 
 
-# fetch all required data with retry logic
-UNICODE_DATA=$(fetch_with_retry "${PROXY_BASE_URL}" "unicode data")
-validate_json "${UNICODE_DATA}" "unicode data"
-
-UNICODE_VERSIONS=$(fetch_with_retry "${API_BASE_URL}/v1/unicode-versions" "all versions")
+UNICODE_VERSIONS=$(fetch_with_retry "${API_BASE_URL}/v1/versions" "all versions")
 validate_json "${UNICODE_VERSIONS}" "all versions"
 
-DRAFT_DATA=$(fetch_with_retry "${PROXY_BASE_URL}/draft/ReadMe.txt" "draft README")
+DRAFT_README=$(fetch_with_retry "${API_BASE_URL}/v1/files/draft/ReadMe.txt" "draft README")
 
-LATEST_DATA=$(fetch_with_retry "${PROXY_BASE_URL}/UCD/latest/ReadMe.txt" "latest release README")
+LATEST_README=$(fetch_with_retry "${API_BASE_URL}/v1/files/UCD/latest/ReadMe.txt" "latest release README")
 
-VERSION_MAP=$(fetch_with_retry "${API_BASE_URL}/v1/unicode-versions/mappings" "version mappings")
-validate_json "${VERSION_MAP}" "version mappings"
-
-
-DRAFT_VERSION=$(extract_from_readme "${DRAFT_DATA}")
-LATEST_RELEASE=$(extract_from_readme "${LATEST_DATA}")
+DRAFT_VERSION=$(extract_from_readme "${DRAFT_README}")
+LATEST_RELEASE=$(extract_from_readme "${LATEST_README}")
 
 # validate extracted versions
 if [[ -z "${DRAFT_VERSION}" ]]; then
@@ -58,11 +47,14 @@ if [[ -z "${LATEST_RELEASE}" ]]; then
     warn "could not extract latest release version from README"
 fi
 
-# process unicode releases with improved logic
-UCD_RELEASES=$(process_unicode_data "${UNICODE_DATA}" "${VERSION_MAP}" "${DRAFT_VERSION}")
-validate_json "${UCD_RELEASES}" "processed UCD releases"
+info "📝 latest release: ${LATEST_RELEASE}"
+info "📝 latest draft: ${DRAFT_VERSION}"
+info "📦 all releases count: $(echo "${UNICODE_VERSIONS}" | jq length)"
 
+{
+    printf 'current_draft=%s\n' "${DRAFT_VERSION}"
+    printf 'latest_release=%s\n' "${LATEST_RELEASE}"
+    printf 'all_releases=%s\n' "$(echo "${UNICODE_VERSIONS}" | jq -c .)"
+} >>"${GITHUB_OUTPUT}"
 
-generate_outputs "${DRAFT_VERSION}" "${LATEST_RELEASE}" "${UNICODE_VERSIONS}" "${UCD_RELEASES}"
-
-
+info "✅ outputs generated successfully"
