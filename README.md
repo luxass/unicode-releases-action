@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check Unicode Releases
-        uses: luxass/unicode-releases-action@v0.7.3
+        uses: luxass/unicode-releases-action@v0.7.4
         id: unicode
       - name: Use Release Information
         run: |
