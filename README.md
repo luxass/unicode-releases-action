@@ -17,7 +17,6 @@ This action fetches Unicode release information including:
 | all_releases   | JSON array containing all Unicode release versions            |
 | latest_release | Latest stable Unicode release version                         |
 | current_draft  | Current draft Unicode release version (if available)          |
-| ucd_releases   | JSON array containing all Unicode Character Database releases |
 
 ### Example workflow
 
