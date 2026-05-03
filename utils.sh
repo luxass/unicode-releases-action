@@ -52,7 +52,7 @@ fetch_with_retry() {
             --max-time "${max_time}" \
             -A "unicode-releases-action (https://github.com/luxass/unicode-releases-action)" \
             "${url}" \
-            2>"${curl_error_file}"); then
+            2>|"${curl_error_file}"); then
 
             rm -f "${curl_error_file}"
 
