@@ -37,7 +37,7 @@ fetch_with_retry() {
     for ((i=1; i<=max_retries; i++)); do
         info "🔄 fetching ${description} (attempt ${i}/${max_retries}) (url: ${url})"
 
-        if response=$(curl -s --fail "${url}"); then
+        if response=$(curl -s --fail "${url}" -A "unicode-releases-action (https://github.com/luxass/unicode-releases-action)"); then
             echo "${response}"
             return 0
         fi
